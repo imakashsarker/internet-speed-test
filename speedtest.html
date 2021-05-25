@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Speed Test (Canvas)</title>
+        <style>
+            canvas{
+                margin: auto;
+            }
+
+            #mainSection{
+
+                text-align: center;
+
+            }
+
+            #theButton{
+
+                width: auto;
+                height: auto;
+                border-radius: 10px;
+                border: none;
+                padding: 8px 5px;
+                background-color: rgb(60,180,255,0.8);
+                color: rgb(255,255,255);
+                text-decoration: none;
+                font-size: 12px;
+                cursor: pointer;
+                outline: none;
+            }
+
+            #theButton:hover{
+
+                background-color: rgb(60,180,255,1);
+
+            }
+            
+            #footer{
+                padding: 3px;
+                font-size: 10px;
+                text-align: right;
+                bottom:0;
+                position: absolute;
+                right: 0;
+            }
+
+            #footer > p{
+                display: inline;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="canvas"></canvas>
+        <section id="mainSection">
+            <button id="theButton">RUN SPEED TEST</button>
+        </section>
+        <div id="footer">
+                <p>&copy;<a href="https://www.sololearn.com/Profile/100073">Jay</a> 3/365</p>
+            </div>
+        <script>
+            var maxSpeed = 35;
+            var startAng = 140; // starting angle
+            var endAng = 400; //end angle
+            var outerRadius = 120;
+            var j = 0; // interval counter
+
+            var canvas = document.getElementById("canvas");
+            var context = canvas.getContext("2d");
+
+            var x = canvas.width = window.innerWidth-20;
+            var y = canvas.height = 300;
+
+            var anInterval;
+            var numMarkers = ["0","20","40","60","80","100"];
+
+            draw();
+
+            function draw(){
+
+                context.clearRect(0,0,x,y); // clear everything
+                
+                //
+
+                context.strokeStyle = "rgb(128,128,128,0.25)";
+                context.lineCap = "round";
+                context.lineWidth = 12;
+
+                context.beginPath();
+                context.arc(x/2,y/2,120,startAng*Math.PI/180,endAng*Math.PI/180);
+                context.stroke();
+                
+                //
+
+                context.strokeStyle = "rgb(120,0,200,1)";
+
+                context.beginPath();
+                context.arc(x/2,y/2,120,startAng*Math.PI/180,(startAng+j)*Math.PI/180);
+                context.stroke();
+                
+                //
+
+                context.strokeStyle = "rgb(20,20,20)";
+                context.lineWidth = 1;
+
+                context.fillStyle = "rgb(255,255,255)";
+
+                context.beginPath();
+                context.arc((x/2)+120*Math.cos((startAng+j)*Math.PI/180),(y/2)+120*Math.sin((startAng+j)*Math.PI/180),4.5,0,2*Math.PI);
+                context.fill();
+                
+                //
+
+                context.fillStyle = "rgb(0,0,0)";
+
+                context.font = "40px arial";
+                context.textAlign = "center";
+                context.textBaseline = "middle";
+                context.fillText(""+Math.round((j/260)*100),x/2,y/2);
+
+                //
+
+                context.fillStyle = "rgb(0,0,0,0.7)";
+
+                context.font = "15px arial";
+                context.textAlign = "center";
+                context.textBaseline = "middle";
+                context.fillText("Megabits per second",x/2,(y/2)+30);
+
+
+                //
+
+                context.font = "13px arial";
+                context.textAlign = "center";
+                context.textBaseline = "middle";
+
+                for(let i=0; i<numMarkers.length; i++){
+
+                    checkColour(i);
+
+                    if(numMarkers[i].length > 2){
+
+                        context.fillText(numMarkers[i]+"+",(x/2)+140*Math.cos((150+(((endAng-startAng-20)/(numMarkers.length-1))*i))*Math.PI/180)+8,(y/2)+140*Math.sin((150+(((endAng-startAng-20)/(numMarkers.length-1))*i))*Math.PI/180));
+
+                    } else {
+
+                        context.fillText(numMarkers[i],(x/2)+140*Math.cos((150+(((endAng-startAng-20)/(numMarkers.length-1))*i))*Math.PI/180),(y/2)+140*Math.sin((150+(((endAng-startAng-20)/(numMarkers.length-1))*i))*Math.PI/180));
+
+                    }
+                }
+                
+                //
+
+                if(j >= 260){
+
+                    clearInterval(anInterval);
+                    
+                    document.getElementById("theButton").innerHTML = "TEST AGAIN";
+                    
+                    addClickEvent();
+                    j = 0;
+
+                } // end if
+                
+                //
+
+            } // end draw function
+
+            function main(){
+                
+                if(canvas.getContext == undefined){
+                    canvas.innerHTML = "HTML5 Canvas is not supported in your browser, sorry :(";
+                    return;
+                }
+
+                removeClickEvent();
+
+                anInterval = setInterval(function(){
+
+                    draw();
+                    j++;
+
+                }, 20); // end interval
+
+            } // end main function
+
+            addClickEvent();
+
+            function addClickEvent(){
+
+                document.getElementById("theButton").addEventListener("click",main);
+
+            }
+
+            function removeClickEvent(){
+
+                document.getElementById("theButton").removeEventListener("click",main);
+
+            }
+
+            function checkColour(posn){
+
+                if(Number(numMarkers[posn]) <= (j/260)*102){
+                    context.fillStyle = "rgb(0,0,0,0.7)";
+                } else {
+                    context.fillStyle = "rgb(0,0,0,0.4)";
+                }
+
+            }
+            
+            /*
+            
+                More will be added soon this is just v1
+                
+            */
+            
+        </script>
+    </body>
+</html>
